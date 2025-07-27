@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Anchor Forcing: Leveraging Anchor Frames for Parallelized Long Video Generation.">
+  <meta name="keywords" content="Autoregressive Generation, Long-video Generatio, Parallelized Inference">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anchor Forcing: Leveraging Anchor Frames for Parallelized Long Video Generation</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Anchor Forcing: Leveraging Anchor Frames for Parallelized Long Video Generation</h1>
+          <div class="is-size-4 publication-authors">
+            <div class="author-row">
+              <span class="author-block" style="font-size: 28px;">
+              </span>
+            </div>
+            <div class="author-row">
+              <span class="author-block">
+                <a href="https://xbxsxp9.github.io/">Xunzhi Xiang</a><sup>*1,2</sup>,</span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=6aHx1rgAAAAJ&hl=zh-TW">Yabo Chen</a><sup>*2,3</sup>,</span>
+                <span class="author-block">
+                  <a href="https://scholar.google.com/citations?user=NLPMoeAAAAAJ&hl=en">Guiyu Zhang</a><sup>*2,4</sup>,</span>
+                <span class="author-block">
+                  Zhongyu Wang</a><sup>2</sup>,</span>
+                  <span class="author-block">
+                    Quanming Xiang<sup>5</sup>,</span>
+            </div>
+            <div class="author-row">
+              <span class="author-block">
+                Gonghu Shang</a><sup>2,3</sup>,</span>
+              <span class="author-block">
+              Junqi Liu</a><sup>2</sup>,</span>
+              <span class="author-block">
+                Haibin Huang</a><sup>2</sup>,</span>
+                <span class="author-block">
+                  Chi Zhang</a><sup>2</sup>,</span>
+                  <span class="author-block">
+                    Xuelong Li</a><sup>2</sup>,</span>
+                    <span class="author-block">
+                      <a href="https://fanq15.github.io/">Qi Fan</a><sup>1†</sup></span>
+            </div>
+          </div>
+
+          <div class="is-size-4 publication-authors">
+            <span class="author-block"><sup>1</sup>Nanjing University,</span>
+            <span class="author-block"><sup>2</sup>TeleAI, Shanghai,</span>
+            <span class="author-block"><sup>3</sup>Shanghai Jiao Tong University,</span>
+            <span class="author-block"><sup>4</sup>Chinese University of Hong Kong, Shenzhen,</span>
+            <span class="author-block"><sup>5</sup>University of Chinese Academy of Sciences</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="xxx"
+                   class="external-link button is-normal is-rounded is-dark"
+                   style="font-size: 18px; padding: 12px 24px;">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="xxx"
+                   class="external-link button is-normal is-rounded is-dark"
+                        style="font-size: 18px; padding: 12px 24px;">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+
+<style>
+  .tldr-box {
+    background: #f8fafc;
+    border-left: 4px solid #4271DA;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+    border-radius: 8px;
+    color: #374151;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .section-title {
+    margin-bottom: 1rem;
+    color: #4271DA;
+  }
+  .figure-caption {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 0.5rem;
+  }
+  .section-divider {
+    border-top: 1px solid #d1d5db;
+    margin: 3rem 0 2rem;
+  }
+</style>
+
+<section class="section" style="padding-top: 0; margin-top: -5rem;">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">TL;DR</h2>
+
+        <!-- Unified TL;DR -->
+        <div class="tldr-box">
+          <p>
+            Our <strong>Anchor Forcing</strong> framework introduces sparse anchor frames as stable references to guide non-anchor frame generation. This design reduces error propagation from per-frame to per-anchor granularity, significantly suppressing temporal artifacts and enabling feasible long-sequence generation. Furthermore, by forecasting future anchor frames in advance, it allows pipelined parallel prediction across multiple GPUs, substantially accelerating long video synthesis.
+          </p>
+        </div>
+
+        <!-- Framework Overview -->
+        <h3 class="title is-4 has-text-left">Anchor Forcing Framework</h3>
+        <img src="static/assets/compare2_01.png" alt="Anchor Forcing Overview" style="width: 100%; height: auto; margin: 20px 0;">
+        <p class="figure-caption">Overview of anchor-based generation and reduced error propagation frequency from per-frame to per-anchor level.</p>
+
+        <!-- 🔽 灰色横线 Divider 插入处 -->
+        <div class="section-divider"></div>
+
+        <!-- Parallel Inference -->
+        <h3 class="title is-4 has-text-left">Pipelined Parallel Generation for Long Videos</h3>
+        <img src="static/assets/Anchor_Forcing_P.png" alt="Pipelined Parallel Generation for Long Videos" style="width: 100%; height: auto; margin: 20px 0;">
+        <p class="figure-caption">Parallel prediction enabled by forecasting future anchor frames across multiple GPUs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section" style="padding-top: 0; margin-top: -3rem;">
+  <div class="container" style="max-width: 100%; padding: 0 20px;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column" style="max-width: 100%;">
+        <h2 class="title is-3" style="margin-bottom: 1rem; color: #374151;">Long-Time Video Generation</h2>
+        
+        <!-- Description -->
+        <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 2rem; color: #6b7280; max-width: 1200px; margin-left: auto; margin-right: auto;">
+          <p>
+            Our model generates high-quality 480P videos and supports streaming generation for extended durations. Below, we present <strong>20-second</strong> videos (top), extended <strong>30-second</strong> videos (middle), and <strong>1-minute</strong> videos (bottom), all produced by our model <strong>without noticeable drift or color shift</strong> across time.
+            <a href="#" style="color: #6366f1; text-decoration: none;">[More Examples]</a>
+          </p>
+        </div>
+        
+        <div class="video-grid">
+          <!-- Video 1 -->
+          <div class="video-container">
+              <video muted loop autoplay controls>
+                  <source src="static/assets/visual_results/1.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+              </video>
+              <div class="video-overlay">
+                  <p>
+                    A cinematic scene from a classic western movie, featuring a rugged man riding a powerful horse through the vast Gobi Desert at sunset. The man, dressed in a dusty cowboy hat and a worn leather jacket, reins tightly on the horse's neck as he gallops across the golden sands. The sun sets dramatically behind them, casting long shadows and warm hues across the landscape. The background is filled with rolling dunes and sparse, rocky outcrops, emphasizing the harsh beauty of the desert. A dynamic wide shot from a low angle, capturing both the man and the expansive desert vista.
+                  </p>
+              </div>
+          </div>
+
+          <!-- Video 2 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/10.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A high-speed FPV (First Person View) shot inside the locomotive cab of a vintage European train, moving at hyper-speed through the bustling streets of an old European city. The cab is filled with intricate mechanical details, including dials, switches, and controls, with steam and smoke swirling around. The train's windows show blurred, colorful buildings and narrow cobblestone streets passing by quickly. The camera angle provides a dynamic, immersive view, capturing the intense motion and the rich architectural details of the cityscape. The overall style is detailed and realistic, emphasizing the speed and energy of the journey.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Video 3 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/11.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A Japanese animated film-style scene of a young woman standing on a ship, looking back at the camera with a gentle smile. She has long black hair tied in a loose ponytail and wears a traditional Japanese kimono with intricate patterns and vibrant colors. Her expression is serene and slightly contemplative. The ship is mid-ocean, with waves gently lapping against the sides, and the background shows a vast blue sea with distant clouds and a setting sun. The scene has a soft, dreamy quality, capturing the tranquility of the moment. A medium shot from a slightly elevated angle, emphasizing her graceful posture and the serene ocean backdrop.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Video 4 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/13.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A stunning aerial photograph captured from a drone, circling around a majestic historic church perched atop a rocky outcropping along the Amalfi Coast. The camera captures the intricate architectural details and tiered pathways and patios that adorn the church, with waves crashing against the rocks below. The view extends to the horizon, showcasing the coastal waters and the rolling hills of the Amalfi Coast in Italy. Distant figures can be seen leisurely walking and enjoying the dramatic ocean views from the patios. The warm glow of the afternoon sun bathes the scene in a magical and romantic light, creating a breathtaking and serene atmosphere. The photo has a high-resolution, detailed quality that highlights every texture and color of the landscape. A wide-angle shot from a dynamic aerial perspective.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Video 5 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/15.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A traditional Chinese dining scene in a dimly lit restaurant, capturing a middle-aged Chinese man sitting at a small round table. He is attentively eating noodles with chopsticks, his face reflecting contentment and focus. His attire is casual yet neat, with a light blue shirt and black pants. The background features blurred details of other diners and tables, hinting at a bustling yet cozy atmosphere. The lighting casts soft shadows, enhancing the warm and inviting ambiance. A close-up shot from a slightly overhead angle, emphasizing the man's engaged expression and the textures of the food.
+              </p>
+            </div>
+          </div>
+          
+          <!-- Video 6 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/17.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A vintage drag racing scene in a classic film noir style, featuring a group of six muscle cars lined up at the starting line of a straight asphalt strip. Each car, adorned with chrome accents and distinctive paint jobs, revs its engine loudly, smoke billowing from their exhausts. The cars are positioned side by side, ready to race, with the front wheels slightly lifted in anticipation. The background is a blurred, sunlit highway with faded road markings and distant buildings. A wide-angle shot captures the intense moment just before the race begins, emphasizing the dynamic movement and the roaring engines.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 7 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A close-up shot of someone carefully pouring milk into a cup, with the milk flowing smoothly and filling the cup with a milky white color. The person's hand is steady, guiding the milk into the cup with precision. The background is blurred, showing a subtle kitchen setting with hints of cabinets and countertops. The photo has a soft, natural lighting effect, emphasizing the smoothness and elegance of the pouring action.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 8 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A detailed oil painting in a romantic style, showcasing a young woman standing amidst a vibrant garden filled with blooming flowers. She wears a floral-patterned dress, her hair loosely tied with wildflowers adorning it. Her expression is one of serene joy, with a gentle smile on her lips. She is framed by a variety of colorful blooms, including roses, tulips, and daisies, which surround her in a natural, organic arrangement. The background features a soft, pastel-colored sky with fluffy clouds, and a gentle breeze rustling through the petals. A medium shot with a slightly tilted angle, capturing the essence of spring and renewal.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 9 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A dramatic sunset landscape photograph captured in a cinematic style, featuring a car with its side mirrors reflecting the vibrant hues of the setting sun. The car is parked on a winding road, with one of its side mirrors perfectly capturing the warm orange and pink tones of the sky. The sun is just below the horizon, casting long shadows and creating a golden glow over the landscape. The background includes rolling hills and a few trees silhouetted against the sky. The photo has a rich, film noir texture, enhancing the mood and atmosphere. A wide-angle shot from a low angle, emphasizing the reflection in the mirror and the vastness of the landscape.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 10 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/21.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A dynamic action shot in the style of a high-energy sports magazine spread, featuring a golden retriever sprinting with all its might after a red sports car speeding down the road. The dog's fur glistens in the sunlight, and its eyes are filled with determination and excitement. It leaps forward, its tail wagging wildly, while the car speeds away in the background, leaving a trail of dust. The background shows a busy city street with blurred cars and pedestrians, adding to the sense of urgency. The photo has a crisp, vibrant color palette and a high-resolution quality. A medium-long shot capturing the dog's full run.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 11 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/22.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A close-up shot of a majestic white dragon with pearlescent, silver-edged scales, icy blue eyes, and elegant ivory horns. The dragon's face is detailed with subtle wrinkles and sharp, defined features, capturing a regal and serene expression. Its breath forms a gentle mist, adding to the ethereal quality. The scales are meticulously textured, reflecting light in a way that highlights their depth and shine. Set against a softly blurred background, the scene is bathed in a soft, ambient glow, emphasizing the dragon's majesty and otherworldly presence. The background hints at a misty forest, with blurred outlines of ancient trees and vines, creating a mystical atmosphere.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 12 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/23.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A photorealistic video of a butterfly-like creature swimming gracefully through a vibrant coral reef. The butterfly has iridescent wings that shimmer in shades of blue and green, and its body is sleek and streamlined, allowing it to move effortlessly through the water. It navigates through a diverse array of colorful corals and schools of fish, creating a mesmerizing underwater scene. The background features intricate coral structures, schools of fish, and the gentle flow of seawater. The camera angle changes from a close-up of the butterfly's face and wings to a wider view of its journey through the reef, capturing the natural movements and colors with stunning clarity. The video has a fluid and dynamic quality, emphasizing the graceful motion of the creature.
+              </p>
+            </div>
+          </div>
+
+          <!-- 🔽 灰色横线 Divider 插入处 -->
+          <div class="section-divider"></div>
+          <div class="section-divider"></div>
+          <div class="section-divider"></div>
+
+          <!-- Video 13 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/0_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A highly detailed close-up shot in HD, focusing on dew droplets glistening on the delicate petals of a blue rose. The petals are soft and velvety, with intricate patterns and subtle color gradients. Each dew drop sparkles like tiny diamonds, catching the light and creating a mesmerizing effect. The background is blurred, emphasizing the dew and petals, with a soft focus on the edges. The photo has a clear, crisp texture, highlighting the beauty and fragility of nature.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 14 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/1_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A vibrant and lively vlog-style photo of a corgi in tropical Maui, showcasing the dog energetically filming itself on a sandy beach. The corgi stands on the shore, one paw slightly lifted, with a joyful and curious expression. It wears a colorful collar and a small backpack camera slung over its neck. The background features a lush, palm-fringed beach with clear turquoise waters and a bright blue sky. The photo has a warm, natural lighting effect, capturing the corgi from a slightly elevated angle, emphasizing its playful and adventurous spirit.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 15 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/2_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A dynamic scene captured in the style of a vibrant food photography, showcasing a chef skillfully chopping onions in a bustling kitchen. The chef, a middle-aged man with a weathered face and determined expression, skillfully slices the onions with quick, practiced movements. He wears a white apron tied neatly around his waist and a chef's hat perched atop his head. The background is a well-equipped kitchen, with stainless steel appliances and countertops cluttered with various cooking tools and ingredients. Steam rises from a pot on the stove, and sunlight filters through the window, casting a warm glow. A medium shot with the chef at the center, capturing the intensity of his work.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 16 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/5_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A tropical island beach scene in a vibrant and lively illustration style, featuring a corgi wearing stylish sunglasses walking along the sandy shore. The corgi has a playful expression, its fur glistening in the bright sunlight. It strides confidently, its tail wagging as it explores the soft sand. The background showcases a clear turquoise sea with palm trees swaying gently in the breeze. A few seagulls fly overhead, adding to the serene yet lively atmosphere. The corgi’s sunglasses add a touch of whimsy and fun to the scene. A medium shot with the corgi at the center, captured from a slightly elevated angle.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 17 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/6_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+              A stunning mid-afternoon landscape photograph with a low camera angle, showcasing several giant wooly mammoths treading through a snowy meadow. Their long, wooly fur gently billows in the brisk wind as they move, creating a sense of natural movement. Snow-covered trees and dramatic snow-capped mountains loom in the distance, adding to the majestic setting. Wispy clouds and a high sun cast a warm glow over the scene, enhancing the serene and awe-inspiring atmosphere. The depth of field brings out the detailed textures of the mammoths and the snowy environment, capturing every nuance of these prehistoric giants in breathtaking clarity.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 18 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/7_30s.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+              A charming 3D digital render art style image showcasing an adorable and happy otter confidently standing on a surfboard, wearing a bright yellow lifejacket. The otter is depicted with a joyful expression, its fur soft and detailed, and it appears to glide gracefully through turquoise tropical waters. The background features lush tropical islands with vibrant green foliage and palm trees, creating a serene and picturesque setting. The water is crystal clear, with gentle waves and sunlight filtering through, adding a sense of tranquility and vibrancy to the scene. A medium shot capturing the otter mid-glide, with a slight tilt to the camera angle emphasizing its playful and adventurous spirit.
+              </p>
+            </div>
+          </div>
+
+          <!-- 🔽 灰色横线 Divider 插入处 -->
+          <div class="section-divider"></div>
+          <div class="section-divider"></div>
+          <div class="section-divider"></div>
+
+          <!-- Video 19 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/0_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A nighttime scene from a vintage film-style photograph, depicting a giant, otherworldly creature slowly walking down a desolate, rundown city street. Only one dim streetlamp casts flickering shadows, illuminating the creature's massive, imposing form. Its skin is rough and covered in peculiar growths, with glowing eyes that reflect the dim light. The creature's steps echo in the empty alleyways, creating a sense of eerie quiet. The background features crumbling buildings, broken windows, and trash-strewn sidewalks. The photo has a grainy texture and a muted color palette, capturing the haunting atmosphere of the scene. A medium shot with a slight tilt to the camera, emphasizing the creature's movement and presence.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 20 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/1_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A mystical Chinese ink painting depicting a crescent blue moon slowly rising over a serene mountain landscape. The moon appears ethereal and glowing, casting a soft, bluish light on the tranquil scene. Mountains in the distance are outlined in ink, with a few pine trees standing tall against the night sky. The foreground features a small stream with ripples reflecting the moonlight. A few bamboo shoots are scattered around, adding to the serene atmosphere. The sky transitions from deep indigo to lighter shades of blue as dawn approaches. A bird can be seen flying towards the moon, adding a sense of movement and life to the composition. A medium shot with a slightly upward angle.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 21 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/2_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A movie trailer in a classic cinematic style, featuring the adventurous journey of a 30-year-old space man wearing a vibrant red wool knitted motorcycle helmet. The scene unfolds against a vast blue sky and a desolate salt desert landscape. Shot on 35mm film, the trailer showcases vivid and rich colors, capturing the hero as he navigates through the harsh terrain with determination. His helmet glints under the sun, adding to the dramatic effect. The background is a mix of sweeping desert vistas and distant horizons, with the occasional shimmer of light reflecting off the salt flats. A dynamic medium shot with a sweeping overhead angle, emphasizing the hero's resilience and the vastness of his adventure.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 22 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/3_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A movie trailer in a classic cinematic style, featuring the adventurous journey of a 30-year-old space man wearing a vibrant red wool knitted motorcycle helmet. The scene unfolds against a vast blue sky and a desolate salt desert landscape. Shot on 35mm film, the trailer showcases vivid and rich colors, capturing the hero as he navigates through the harsh terrain with determination. His helmet glints under the sun, adding to the dramatic effect. The background is a mix of sweeping desert vistas and distant horizons, with the occasional shimmer of light reflecting off the salt flats. A dynamic medium shot with a sweeping overhead angle, emphasizing the hero's resilience and the vastness of his adventure.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 23 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/4_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A movie trailer in a classic cinematic style, featuring the adventurous journey of a 30-year-old space man wearing a vibrant red wool knitted motorcycle helmet. The scene unfolds against a vast blue sky and a desolate salt desert landscape. Shot on 35mm film, the trailer showcases vivid and rich colors, capturing the hero as he navigates through the harsh terrain with determination. His helmet glints under the sun, adding to the dramatic effect. The background is a mix of sweeping desert vistas and distant horizons, with the occasional shimmer of light reflecting off the salt flats. A dynamic medium shot with a sweeping overhead angle, emphasizing the hero's resilience and the vastness of his adventure.
+              </p>
+            </div>
+          </div>
+
+          <!-- Video 24 -->
+          <div class="video-container">
+            <video muted loop autoplay controls>
+              <source src="static/assets/visual_results/5_1min.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-overlay">
+              <p>
+                A movie trailer in a classic cinematic style, featuring the adventurous journey of a 30-year-old space man wearing a vibrant red wool knitted motorcycle helmet. The scene unfolds against a vast blue sky and a desolate salt desert landscape. Shot on 35mm film, the trailer showcases vivid and rich colors, capturing the hero as he navigates through the harsh terrain with determination. His helmet glints under the sun, adding to the dramatic effect. The background is a mix of sweeping desert vistas and distant horizons, with the occasional shimmer of light reflecting off the salt flats. A dynamic medium shot with a sweeping overhead angle, emphasizing the hero's resilience and the vastness of his adventure.
+              </p>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section" style="padding: 4rem 0;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column" style="max-width: 100%;">
+        <!-- Title -->
+        <h2 class="title is-3" style="margin-bottom: 2rem; color: #374151; font-weight: 600;">
+          (Surprisingly) Efficient Training, Even Without Full Parallelism
+        </h2>
+        
+        <!-- Description -->
+        <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+          <p>
+            While Self Forcing relies on sequential rollout, it is surprisingly efficient and obtains better quality with the same 
+            training budget. This is mainly because we still maintain sufficient parallelism even processing one frame at a time.
+          </p>
+        </div>
+        
+        <!-- Charts Container -->
+        <div class="charts-container" style="display: flex; justify-content: center; align-items: center; margin-top: 2rem;">
+          <div class="chart-image" style="width: 100%; max-width: 1000px; text-align: center;">
+            <img src="static/assets/image.png" 
+                 alt="Training efficiency comparison charts showing per-iteration training time and quality vs training time" 
+                 style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); background: white; padding: 20px;">
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section" style="padding: 4rem 0;">
+  <div class="container" style="max-width: 100%; margin: 0 auto; padding: 0;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column" style="max-width: 100%;">
+        <!-- Title -->
+        <div style="padding: 0 20px;">
+          <h2 class="title is-3" style="margin-bottom: 2rem; color: #374151; font-weight: 600;">
+            Longer and Better
+          </h2>
+          
+          <!-- Description -->
+          <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 1000px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+            <p>
+              Our method delivers <strong>substantially superior performance</strong> on <strong>30-second</strong> long video generation, surpassing MAGI, SkyReels, CausVid, and Self-Forcing in both <strong>visual quality</strong> and <strong>temporal consistency</strong>. It <strong>robustly mitigates frame drift and flickering</strong>, while <strong>effectively addressing over-saturation and color imbalance</strong>, resulting in <strong>more stable and photorealistic outputs</strong>.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Comparison Grid - Full Width -->
+        <div class="comparison-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 2rem; padding: 0 8px;">
+          
+          <!-- Column Headers -->
+          <div class="comparison-header" style="padding: 15px 10px; font-weight: 600; color: #374151; display: flex; align-items: center; justify-content: center; min-height: 60px;">
+            MAGI
+          </div>
+          <div class="comparison-header" style="padding: 15px 10px; font-weight: 600; color: #374151; display: flex; align-items: center; justify-content: center; min-height: 60px;">
+            SkyReels-V2
+          </div>
+          <div class="comparison-header" style="padding: 15px 10px; font-weight: 600; color: #374151; display: flex; align-items: center; justify-content: center; min-height: 60px;">
+            CausVid
+          </div>
+          <div class="comparison-header" style="padding: 15px 10px; font-weight: 600; color: #374151; display: flex; align-items: center; justify-content: center; min-height: 60px;">
+            Self-Forcing
+          </div>
+          <div class="comparison-header" style="padding: 15px 10px; font-weight: 600; color: #2d5a2d; display: flex; align-items: center; justify-content: center; min-height: 60px;">
+            Ours
+          </div>
+          
+          <!-- Row 1 - City Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          
+          <!-- Row 2 - Plant Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          
+          <!-- Row 3 - Character Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <!-- Row 4 - Character Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <!-- Row 5 - Character Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-5.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-5.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-5.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-5.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-5.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <!-- Row 6 - Character Scene -->
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/MG-6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Sky-6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ca-6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/SF-6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="comparison-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover; border: 3px solid #22c55e;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/Ours-6.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<section class="section" style="padding: 4rem 0;">
+  <div class="container" style="max-width: 100%; margin: 0 auto; padding: 0;">
+    <div class="columns is-centered has-text-centered">
+      <div class="column" style="max-width: 100%;">
+        <!-- Title -->
+        <div style="padding: 0 20px;">
+          <h2 class="title is-3" style="margin-bottom: 2rem; color: #374151; font-weight: 600;">
+            Limitation: Extrapolation Quality
+          </h2>
+          
+          <!-- Description -->
+          <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 1000px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+            <p>
+              While Self Forcing addresses exposure bias and we observe no error accumulation within the video length the model is 
+              trained on (5 seconds), we still observe quality degradation when extrapolating beyond its training horizon. Below we 
+              show 30-second videos generated via sliding window extrapolation.
+            </p>
+          </div>
+        </div>
+        
+        <!-- Video Grid - Full Width -->
+        <div class="limitation-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 2rem; padding: 0 8px;">
+          
+          <!-- Video 1 -->
+          <div class="limitation-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+              The close-up shot of a Victoria crowned pigeon showcases its striking blue plumage and red chest...
+            </div>
+          </div>
+          
+          <!-- Video 2 -->
+          <div class="limitation-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+              A cartoon kangaroo disco dances.
+            </div>
+          </div>
+          
+          <!-- Video 3 -->
+          <div class="limitation-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+              A Chinese Lunar New Year celebration video with Chinese Dragon.
+            </div>
+          </div>
+          
+          <!-- Video 4 -->
+          <div class="limitation-video">
+            <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
+              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+              3D animation of a small, round, fluffy creature with big, expressive eyes explores a vibrant, enchanted forest...
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Responsive design for limitation grid */
+@media (max-width: 1200px) {
+    .limitation-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px !important;
+    }
+    
+    .video-caption {
+        font-size: 14px !important;
+        margin-top: 10px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .limitation-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        padding: 0 12px !important;
+    }
+    
+    .video-caption {
+        font-size: 15px !important;
+        margin-top: 12px !important;
+        padding: 0 8px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .limitation-grid {
+        padding: 0 16px !important;
+    }
+    
+    .video-caption {
+        padding: 0 12px !important;
+    }
+}
+</style>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>
+@article{zhang2025proteus,
+  title={Proteus-ID: ID-Consistent and Motion-Coherent Video Customization},
+  author={Zhang, Guiyu and Shi, Chen and Jiang, Zijian and Xiang, Xunzhi and Qian, Jingjing and Shi, Shaoshuai and Jiang, Li},
+  journal={arXiv preprint arXiv:2506.23729},
+  year={2025}
+}
+</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website template is borrowed from <a
+                href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>. Thanks for their effort.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
