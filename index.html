@@ -160,17 +160,17 @@
         </div>
 
         <!-- Framework Overview -->
-        <h3 class="title is-4 has-text-left">Anchor Forcing Demo</h3>
+        <h3 class="title is-4 has-text-left">Demo</h3>
         <img src="static/assets/demo_begin.png" alt="demo" style="width: 100%; height: auto; margin: 20px 0;">
-        <p class="figure-caption">Anchor Forcing (AF): a novel long-video generation paradigm that mitigates temporal drift and color shift, while enabling multi-GPU parallelization to generate longer videos.</p>
+        <p class="figure-caption">Macro-from-Micro Planning (MMPL): a novel long-video generation paradigm that mitigates temporal drift and color shift, while enabling multi-GPU parallelization to generate longer videos.</p>
 
         <!-- 🔽 灰色横线 Divider 插入处 -->
         <div class="section-divider"></div>
 
         <!-- Framework Overview -->
         <h3 class="title is-4 has-text-left">Anchor Forcing Framework</h3>
-        <img src="static/assets/compare2_01.png" alt="Anchor Forcing Overview" style="width: 100%; height: auto; margin: 20px 0;">
-        <p class="figure-caption">Overview of anchor-based generation and reduced error propagation frequency from per-frame to per-anchor level.</p>
+        <img src="static/assets/compare2_01.png" alt="Macro-from-Micro Planning" style="width: 100%; height: auto; margin: 20px 0;">
+        <p class="figure-caption">Overall framework of Macro-from-Micro Planning. Our method operates on two planning levels: (1) Micro Plans, which predict a sequence of future frames within each segment to mitigate local error accumulation, and (2) a Macro Plan, formed as an Autoregressive Chain of Micro Plans, where the planning frames of the first segment autoregressively generate the planning frames of subsequent segments, ensuring long-horizon temporal consistency.</p>
 
         <!-- 🔽 灰色横线 Divider 插入处 -->
         <div class="section-divider"></div>
@@ -532,36 +532,36 @@
 </section>
 
 
-<section class="section" style="padding: 4rem 0;">
-  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-    <div class="columns is-centered has-text-centered">
-      <div class="column" style="max-width: 100%;">
+<!-- <section class="section" style="padding: 4rem 0;"> -->
+<!--   <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;"> -->
+<!--     <div class="columns is-centered has-text-centered"> -->
+<!--       <div class="column" style="max-width: 100%;"> -->
         <!-- Title -->
-        <h2 class="title is-3" style="margin-bottom: 2rem; color: #374151; font-weight: 600;">
-          (Surprisingly) Efficient Training, Even Without Full Parallelism
-        </h2>
+<!--         <h2 class="title is-3" style="margin-bottom: 2rem; color: #374151; font-weight: 600;"> -->
+<!--           (Surprisingly) Efficient Training, Even Without Full Parallelism -->
+<!--         </h2> -->
         
         <!-- Description -->
-        <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.6;">
-          <p>
-            While Self Forcing relies on sequential rollout, it is surprisingly efficient and obtains better quality with the same 
-            training budget. This is mainly because we still maintain sufficient parallelism even processing one frame at a time.
-          </p>
-        </div>
+<!--         <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 900px; margin-left: auto; margin-right: auto; line-height: 1.6;"> -->
+<!--           <p> -->
+<!--             While Self Forcing relies on sequential rollout, it is surprisingly efficient and obtains better quality with the same  -->
+<!--             training budget. This is mainly because we still maintain sufficient parallelism even processing one frame at a time. -->
+<!--           </p> -->
+<!--         </div> -->
         
         <!-- Charts Container -->
-        <div class="charts-container" style="display: flex; justify-content: center; align-items: center; margin-top: 2rem;">
-          <div class="chart-image" style="width: 100%; max-width: 1000px; text-align: center;">
-            <img src="static/assets/image.png" 
-                 alt="Training efficiency comparison charts showing per-iteration training time and quality vs training time" 
-                 style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); background: white; padding: 20px;">
-          </div>
-        </div>
+<!--         <div class="charts-container" style="display: flex; justify-content: center; align-items: center; margin-top: 2rem;"> -->
+<!--           <div class="chart-image" style="width: 100%; max-width: 1000px; text-align: center;"> -->
+<!--             <img src="static/assets/image.png"  -->
+<!--                  alt="Training efficiency comparison charts showing per-iteration training time and quality vs training time"  -->
+<!--                  style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); background: white; padding: 20px;"> -->
+<!--           </div> -->
+<!--         </div> -->
         
-      </div>
-    </div>
-  </div>
-</section>
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
+<!-- </section> -->
 
 
 
