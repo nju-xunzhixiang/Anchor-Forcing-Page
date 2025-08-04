@@ -48,7 +48,7 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">Anchor Forcing: Leveraging Anchor Frames for Parallelized Long Video Generation</h1>
+          <h1 class="title is-1 publication-title">Macro-from-Micro Planning for High-Quality and Parallelized Autoregressive Long Video Generation</h1>
           <div class="is-size-4 publication-authors">
             <div class="author-row">
               <span class="author-block" style="font-size: 28px;">
@@ -162,7 +162,7 @@
         <!-- Unified TL;DR -->
         <div class="tldr-box">
           <p>
-            We propose Macro-from-Micro, a novel long-video generation paradigm that mitigates temporal drift and color shift, while enabling multi-GPU parallelization to generate longer videos.
+            We propose a novel plan-then-populate framework centered on Macro-from-Micro Planning (MMPL) for scalable, high-quality long video generation. Experiments on standard benchmarks confirm that our method outperforms existing video generation models in quality and stability.
           </p>
         </div>
 
@@ -175,7 +175,7 @@
         <div class="section-divider"></div>
 
         <!-- Framework Overview -->
-        <h3 class="title is-4 has-text-left">Anchor Forcing Framework</h3>
+        <h3 class="title is-4 has-text-left">Macro-from-Micro Planning Framework</h3>
         <img src="static/assets/compare2_01.png" alt="Macro-from-Micro Planning" style="width: 100%; height: auto; margin: 20px 0;">
         <p class="figure-caption">Overall framework of Macro-from-Micro Planning. Our method operates on two planning levels: (1) Micro Plans, which predict a sequence of future frames within each segment to mitigate local error accumulation, and (2) a Macro Plan, formed as an Autoregressive Chain of Micro Plans, where the planning frames of the first segment autoregressively generate the planning frames of subsequent segments, ensuring long-horizon temporal consistency.</p>
 
