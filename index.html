@@ -91,7 +91,7 @@
 
           <div class="is-size-4 publication-authors">
             <span class="author-block"><sup>1</sup>Nanjing University,</span>
-            <span class="author-block"><sup>2</sup>TeleAI, Shanghai,</span>
+            <span class="author-block"><sup>2</sup>TeleAI,</span>
             <span class="author-block"><sup>3</sup>Shanghai Jiao Tong University,</span>
             <span class="author-block"><sup>4</sup>Chinese University of Hong Kong, Shenzhen,</span>
             <span class="author-block"><sup>5</sup>University of Chinese Academy of Sciences</span>
@@ -827,9 +827,7 @@
           <!-- Description -->
           <div class="content has-text-justified" style="font-size: 16px; margin-bottom: 3rem; color: #6b7280; max-width: 1000px; margin-left: auto; margin-right: auto; line-height: 1.6;">
             <p>
-              While Self Forcing addresses exposure bias and we observe no error accumulation within the video length the model is 
-              trained on (5 seconds), we still observe quality degradation when extrapolating beyond its training horizon. Below we 
-              show 30-second videos generated via sliding window extrapolation.
+              Although MMPL mitigates error accumulation in long video generation, the substantial temporal span of long videos means that a single text prompt often aligns only with the early content and fails to capture the full video semantics. As generation progresses, the limitations of a static prompt lead to repetitive or even collapsed content in later segments. The examples below illustrate content repetition and quality degradation caused by using a single static prompt.
             </p>
           </div>
         </div>
@@ -840,45 +838,45 @@
           <!-- Video 1 -->
           <div class="limitation-video">
             <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
-              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              <source src="static/assets/visual_results/bad_case_1.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+<!--             <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
               The close-up shot of a Victoria crowned pigeon showcases its striking blue plumage and red chest...
-            </div>
+            </div> -->
           </div>
           
           <!-- Video 2 -->
           <div class="limitation-video">
             <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
-              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              <source src="static/assets/visual_results/bad_case_2.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+<!--             <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
               A cartoon kangaroo disco dances.
-            </div>
+            </div> -->
           </div>
           
           <!-- Video 3 -->
           <div class="limitation-video">
             <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
-              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              <source src="static/assets/visual_results/bad_case_3.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+<!--             <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
               A Chinese Lunar New Year celebration video with Chinese Dragon.
-            </div>
+            </div> -->
           </div>
           
           <!-- Video 4 -->
           <div class="limitation-video">
             <video style="width: 100%; height: auto; border-radius: 6px; aspect-ratio: 16/9; object-fit: cover;" muted loop autoplay controls>
-              <source src="static/assets/visual_results/0000.mp4" type="video/mp4">
+              <source src="static/assets/visual_results/bad_case_4.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
-            <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
+<!--             <div class="video-caption" style="margin-top: 1px; padding: 0 4px; font-size: 13px; line-height: 1.4; color: #6b7280; text-align: center;">
               3D animation of a small, round, fluffy creature with big, expressive eyes explores a vibrant, enchanted forest...
-            </div>
+            </div> -->
           </div>
         </div>
         
